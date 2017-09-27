@@ -85,11 +85,12 @@ if __name__ == '__main__':
     length = len(sys.argv)
     if length == 1:
         # set a timeout 0.1s for the stdin
-        rfds, _, _ = select.select( [sys.stdin], [], [], 0.1)
+        rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
         try:
             part_list = rfds[0].read().split("separator")
         except IndexError:
             help()
+            sys.stderr.write("empty stdin")
             sys.exit(-1)
         if len(part_list) == 4:
             oper1arr, oper2arr = tuple([x.split() for x in part_list[:2]])
@@ -97,7 +98,7 @@ if __name__ == '__main__':
             # global
             infile1, infile2 = tuple(part_list[3].split())
         else:
-            print "separate error: expected 4 part, found {0}".format(len(part_list))
+            sys.stderr.write("separate error: expected 4 part, found {0}".format(len(part_list)))
             sys.exit(-1)
     elif length == 4:
         # global
@@ -112,10 +113,8 @@ if __name__ == '__main__':
 
         with open(indexfile,'r') as snpsort:
             snpsortarr=[it2.rstrip().split('_') for it2 in snpsort.readlines()]
-    else:
-        help()
-        sys.exit(-1)
+
     try:
         relationshipinsample(oper1arr, oper2arr, snpsortarr)
-    except Exception,e:
+    except Exception, e:
         sys.stderr.write(e.message)
