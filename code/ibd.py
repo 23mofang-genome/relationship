@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding:utf-8
-import sys, os
+import sys, os, select
 def help():
     sys.stderr.write('''
     USAGE:
@@ -83,13 +83,20 @@ def relationshipinsample(oper1arr, oper2arr, snpsortarr):
 if __name__ == '__main__':
     length = len(sys.argv)
     if length == 1:
-        with sys.stdin as f:
-            part_list = f.read().split("separator")
-            if len(part_list) == 4:
-                oper1arr, oper2arr = tuple([x.split() for x in part_list[:2]])
-                snpsortarr = [ x.rstrip().split('_') for x in part_list[2].split()]
-                # global
-                infile1, infile2 = tuple(part_list[3].split())
+        # set a timeout 0.1s for the stdin
+        rfds, _, _ = select.select( [sys.stdin], [], [], 0.1)
+        try:
+            part_list = rfds[0].read().split("separator")
+        except IndexError:
+            help()
+            sys.exit(-1)
+        if len(part_list) == 4:
+            oper1arr, oper2arr = tuple([x.split() for x in part_list[:2]])
+            snpsortarr = [ x.rstrip().split('_') for x in part_list[2].split()]
+            # global
+            infile1, infile2 = tuple(part_list[3].split())
+        else:
+            print "separate error: expected 4 part, found {0}".format(len(part_list))
     elif length == 4:
         # global
         infile1=sys.argv[1]
