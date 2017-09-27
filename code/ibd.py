@@ -4,18 +4,13 @@ import sys, os
 def help():
     sys.stderr.write('''
     USAGE:
-    /usr/local/python27/bin/python IBD.py infile1 infile2 indexifle 
+    python IBD.py ./testdata/111-1173-9987.sfs ./testdata/111-1175-1798.sfs ./snpsort.s
+
+    Or you can alse use STDIN which separated by string "separator":
+    cat ./testdata/111-1173-9987.sfs ./testdata/separator.txt ./testdata/111-1175-1798.sfs ./testdata/separator.txt ./snpsort.s ./testdata/separator.txt ./testdata/filenames.txt | python ibd.py
     ''')
 
-def relationshipinsample(infile1,infile2,indexfile):
-    with open(infile1,'r') as oper1:
-        oper1arr=[ it1.rstrip() for it1 in  oper1.readlines()]
-
-    with open(infile2,'r') as oper2:
-        oper2arr=[ it2.rstrip() for it2 in oper2.readlines()]
-
-    with open(indexfile,'r') as snpsort:
-        snpsortarr=[it2.rstrip().split('_') for it2 in snpsort.readlines()]
+def relationshipinsample(oper1arr, oper2arr, snpsortarr):
 
     chr=1
     bpos=1
@@ -87,14 +82,31 @@ def relationshipinsample(infile1,infile2,indexfile):
 
 if __name__ == '__main__':
     length = len(sys.argv)
-    if len(sys.argv)!=4:
+    if length == 1:
+        with sys.stdin as f:
+            part_list = f.read().split("separator")
+            if len(part_list) == 4:
+                oper1arr, oper2arr = tuple([x.split() for x in part_list[:2]])
+                snpsortarr = [ x.rstrip().split('_') for x in part_list[2].split()]
+                # global
+                infile1, infile2 = tuple(part_list[3].split())
+    elif length == 4:
+        # global
+        infile1=sys.argv[1]
+        infile2=sys.argv[2]
+        indexfile=sys.argv[3]
+        with open(infile1,'r') as oper1:
+            oper1arr=[ it1.rstrip() for it1 in  oper1.readlines()]
+
+        with open(infile2,'r') as oper2:
+            oper2arr=[ it2.rstrip() for it2 in oper2.readlines()]
+
+        with open(indexfile,'r') as snpsort:
+            snpsortarr=[it2.rstrip().split('_') for it2 in snpsort.readlines()]
+    else:
         help()
         sys.exit(-1)
-
-    infile1=sys.argv[1]
-    infile2=sys.argv[2]
-    indexfile=sys.argv[3]
     try:
-        relationshipinsample(infile1,infile2,indexfile)
+        relationshipinsample(oper1arr, oper2arr, snpsortarr)
     except Exception,e:
         sys.stderr.write(e.message)
