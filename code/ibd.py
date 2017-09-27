@@ -8,7 +8,8 @@ def help():
 
     Or you can alse use STDIN which separated by string "separator":
     cat ./testdata/111-1173-9987.sfs ./testdata/separator.txt ./testdata/111-1175-1798.sfs ./testdata/separator.txt ./snpsort.s ./testdata/separator.txt ./testdata/filenames.txt | python ibd.py
-    ''')
+
+''')
 
 def relationshipinsample(oper1arr, oper2arr, snpsortarr):
 
