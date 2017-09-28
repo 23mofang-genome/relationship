@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sdk import apiClient
-from config import *
+from config_prod import *
 import sys
 import json
 

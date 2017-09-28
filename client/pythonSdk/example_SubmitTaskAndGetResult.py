@@ -5,8 +5,9 @@ from sdk import tokenManager
 import json
 import time
 import tarfile, io  
+import sys
 
-TestImageName="cn-bj2.ugchub.service.ucloud.cn/library/helloworld:first"
+TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.1"
 
 def untarbytes(data):
 	tar = tarfile.open(fileobj=io.BytesIO(data))
@@ -22,8 +23,10 @@ if __name__=='__main__':
 	token = tokenManager.getToken()
 
 	print "example 1 submit sync task"
-	response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="thisiscmd", 
-		  OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data="thisispostdata")
+	STDIN=sys.stdin.read()
+	print type(STDIN), len(STDIN)
+	response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", 
+		  OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=STDIN)
 	
 	if isinstance(response,dict):
 		print "submit sync task fail" + response["Message"]
@@ -37,8 +40,8 @@ if __name__=='__main__':
 
 
 	print "example 2 submit async task"
-	response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="thisiscmd", 
-		  OutputDir="/tmp", OutputFileName="result", TaskType="Async", TaskName="testasync", Data="thisispostdata")
+	response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", 
+		  OutputDir="/tmp", OutputFileName="result", TaskType="Async", TaskName="testasync", Data=STDIN)
 	
 	print response
 	print ""

@@ -1,1 +1,2 @@
 config_prod.py
+*.pyc

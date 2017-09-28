@@ -2,7 +2,7 @@
 import hashlib, json
 import urllib
 import requests
-from config import *
+from config_prod import *
 import platform
 from . import __version__
 
