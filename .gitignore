@@ -1,2 +1,4 @@
 config_prod.py
 *.pyc
+*.log
+.vscode/
