@@ -27,11 +27,11 @@ def untarbytes(data):
 def submit_worker(tuple_tow_file_name):
     first_file_name, second_file_name = tuple_tow_file_name
     first_file_name, second_file_name = os.path.basename(first_file_name), os.path.basename(second_file_name)
-    with open("/data/norun/{0}}".format(first_file_name)) as first:
+    with open("/data/norun/{0}".format(first_file_name)) as first:
         first = first.read()
     with open("/data/snpsort.s") as snpsort:
         snpsort = snpsort.read()
-    with open("/data/run/{0}}".format(second_file_name)) as second:
+    with open("/data/run/{0}".format(second_file_name)) as second:
         second = second.read()
     data = first + "separator" + second + "separator" + snpsort + "separator" + "{0}\n{1}".format(first_file_name, second_file_name)
     response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=data)
