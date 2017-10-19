@@ -27,7 +27,7 @@ if __name__=='__main__':
 	print "example 1 submit sync task"
 	STDIN=sys.stdin.read()
 	stringf = StringIO.StringIO()
-	zipper = gzip.GzipFile(mode = "wb", fileobj=stringf)
+	zipper = gzip.GzipFile(mode = "wb", fileobj=stringf, compresslevel=4)
 	zipper.write(STDIN)
 	zipper.close()
 	print type(stringf), stringf.len
