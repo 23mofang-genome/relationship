@@ -94,7 +94,7 @@ if __name__ == '__main__':
             sys.exit(-1)
         if len(part_list) == 3:
             oper1arr, oper2arr = tuple([x.split() for x in part_list[:2]])
-            with open('./snpsort.s','r') as snpsort:
+            with open('/usr/bin/snpsort.s','r') as snpsort:
                 snpsortarr=[it2.rstrip().split('_') for it2 in snpsort.readlines()]
             # global
             infile1, infile2 = tuple(part_list[2].split())

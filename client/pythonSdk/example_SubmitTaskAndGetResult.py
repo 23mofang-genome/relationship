@@ -7,7 +7,7 @@ import time
 import tarfile, io  
 import sys
 
-TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.1"
+TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.2"
 
 def untarbytes(data):
 	tar = tarfile.open(fileobj=io.BytesIO(data))
