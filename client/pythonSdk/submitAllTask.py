@@ -16,7 +16,7 @@ from gevent import Timeout
 import gzip, StringIO
 gevent.monkey.patch_all()
 
-TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.2.1"
+TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.3"
 
 def untarbytes(data):
     tar = tarfile.open(fileobj=io.BytesIO(data))
@@ -47,10 +47,11 @@ def submit_worker(tuple_tow_file_name):
     zipper = gzip.GzipFile(mode = "wb", fileobj=stringf)
     zipper.write(data)
     zipper.close()
+    data = stringf.getvalue()
     try:
         with Timeout(10):
             # 提交任务
-            response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=stringf)
+            response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=data)
         if isinstance(response, dict):
             print "submit sync task fail" + response["Message"]
         else:
