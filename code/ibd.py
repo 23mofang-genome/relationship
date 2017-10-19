@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding:utf-8
-import sys, os, select
+import sys, os, select, StringIO, gzip
 def help():
     sys.stderr.write('''
     USAGE:
@@ -86,8 +86,11 @@ if __name__ == '__main__':
     if length == 1:
         # set a timeout 0.1s for the stdin
         rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
+        stringf = StringIO.StringIO(rfds[0].read())
+        decompressedFile = gzip.GzipFile(fileobj=stringf)
+        data = decompressedFile.read()
         try:
-            part_list = rfds[0].read().split("separator")
+            part_list = data.split("separator")
         except IndexError:
             help()
             sys.stderr.write("empty stdin")
