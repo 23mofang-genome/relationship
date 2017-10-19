@@ -87,7 +87,8 @@ if __name__ == '__main__':
         # set a timeout 0.1s for the stdin
         rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
         stringf = StringIO.StringIO(rfds[0].read())
-        decompressedFile = gzip.GzipFile(fileobj=stringf.getvalue())
+        stringf.seek(0)
+        decompressedFile = gzip.GzipFile(fileobj=stringf)
         data = decompressedFile.read()
         try:
             part_list = data.split("separator")
