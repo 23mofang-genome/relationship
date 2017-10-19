@@ -34,13 +34,11 @@ def submit_worker(tuple_tow_file_name):
         first = first.read()
         if not first:
             return
-    with open("/data/snpsort.s") as snpsort:
-        snpsort = snpsort.read()
     with open("/data/run/{0}".format(second_file_name)) as second:
         second = second.read()
         if not first:
             return
-    data = first + "separator" + second + "separator" + snpsort + "separator" + "{0}\n{1}".format(first_file_name, second_file_name)
+    data = first + "separator" + second + "separator" + "{0}\n{1}".format(first_file_name, second_file_name)
     response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=data)
 
     if isinstance(response, dict):
