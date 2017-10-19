@@ -44,7 +44,7 @@ def submit_worker(tuple_tow_file_name):
 
     # 压缩
     stringf = StringIO.StringIO()
-    zipper = gzip.GzipFile(mode = "wb", fileobj=stringf)
+    zipper = gzip.GzipFile(mode = "wb", fileobj=stringf, compresslevel=4)
     zipper.write(data)
     zipper.close()
     data = stringf.getvalue()
