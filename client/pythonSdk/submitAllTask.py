@@ -12,6 +12,8 @@ from downloadAll import get_ufile_list
 import itertools
 import gevent.pool
 import gevent.monkey
+from gevent import Timeout
+import gzip, StringIO
 gevent.monkey.patch_all()
 
 TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.2.1"
@@ -39,12 +41,24 @@ def submit_worker(tuple_tow_file_name):
         if not first:
             return
     data = first + "separator" + second + "separator" + "{0}\n{1}".format(first_file_name, second_file_name)
-    response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=data)
 
-    if isinstance(response, dict):
-        print "submit sync task fail" + response["Message"]
-    else:
-        untarbytes(response)
+    # 压缩
+    stringf = StringIO.StringIO()
+    zipper = gzip.GzipFile(mode = "wb", fileobj=stringf)
+    zipper.write(data)
+    zipper.close()
+    try:
+        with Timeout(10):
+            # 提交任务
+            response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=stringf)
+        if isinstance(response, dict):
+            print "submit sync task fail" + response["Message"]
+        else:
+            untarbytes(response)
+    except Timeout:
+        with open('timeout.txt','a') as timeoutf:
+            strs = "<->".join(tuple_tow_file_name) + " TIMEOUT\n"
+            timeoutf.write(strs)
 
 if __name__=='__main__':
     length = len(sys.argv)

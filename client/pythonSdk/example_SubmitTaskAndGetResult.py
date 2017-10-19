@@ -6,6 +6,8 @@ import json
 import time
 import tarfile, io  
 import sys
+import gzip
+import StringIO
 
 TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.2.1"
 
@@ -24,9 +26,13 @@ if __name__=='__main__':
 
 	print "example 1 submit sync task"
 	STDIN=sys.stdin.read()
-	print type(STDIN), len(STDIN)
+	stringf = StringIO.StringIO()
+	zipper = gzip.GzipFile(mode = "wb", fileobj=stringf)
+	zipper.write(STDIN)
+	zipper.close()
+	print type(stringf), stringf.len
 	response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", 
-		  OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=STDIN)
+		  OutputDir="/tmp", OutputFileName="result", TaskType="Sync", TaskName="testsync", Data=stringf)
 	
 	if isinstance(response,dict):
 		print "submit sync task fail" + response["Message"]
@@ -41,7 +47,7 @@ if __name__=='__main__':
 
 	print "example 2 submit async task"
 	response = apiInterface.SubmitTask(ImageName=TestImageName, AccessToken=token, Cmd="", 
-		  OutputDir="/tmp", OutputFileName="result", TaskType="Async", TaskName="testasync", Data=STDIN)
+		  OutputDir="/tmp", OutputFileName="result", TaskType="Async", TaskName="testasync", Data=stringf)
 	
 	print response
 	print ""
