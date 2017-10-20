@@ -15,4 +15,4 @@ REGION      = "cn-bj2"  # 区域列表,参见https://docs.ucloud.cn/api-docs-az/
 
 
 #token默认过期时间
-TOKEN_EXPIRE_TIME=7200
+TOKEN_EXPIRE_TIME=720000
