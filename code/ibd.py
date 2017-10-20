@@ -85,8 +85,8 @@ if __name__ == '__main__':
     length = len(sys.argv)
     if length == 1:
         # set a timeout 0.1s for the stdin
-        rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
-        stringf = StringIO.StringIO(rfds[0].read())
+        # rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
+        stringf = StringIO.StringIO(sys.stdin.read())
         stringf.seek(0)
         decompressedFile = gzip.GzipFile(fileobj=stringf)
         data = decompressedFile.read()
