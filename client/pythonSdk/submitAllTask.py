@@ -16,7 +16,7 @@ from gevent import Timeout
 import gzip, StringIO
 gevent.monkey.patch_all()
 
-TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.3"
+TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.3.1"
 
 def untarbytes(data):
     tar = tarfile.open(fileobj=io.BytesIO(data))
