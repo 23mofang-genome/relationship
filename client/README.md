@@ -26,7 +26,7 @@ cd client
 
 ### Step 3
 ```bash
-cat ../code/testdata/111-1173-9987.sfs ../code/testdata/separator.txt ../code/testdata/111-1175-1798.sfs ../code/testdata/separator.txt ../code/snpsort.s ../code/testdata/separator.txt ../code/testdata/filenames.txt | python -u pythonSdk/example_SubmitTaskAndGetResult.py
+cat ../code/testdata/111-1173-9987.sfs ../code/testdata/separator.txt ../code/testdata/111-1175-1798.sfs ../code/testdata/separator.txt ../code/testdata/filenames.txt | python -u pythonSdk/example_SubmitTaskAndGetResult.py
 ```
 
 ## Some Explain

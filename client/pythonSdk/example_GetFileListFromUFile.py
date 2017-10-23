@@ -22,14 +22,20 @@ if __name__ == '__main__':
     # 目标空间
     bucket = "mf23"
     # 设置每页的数量
-    mylimit = 20
+    mylimit = 1000
  
+    norun = 0
+    run = 0
+
     # 获取第一页
     ret, resp = handler.getfilelist(bucket, limit=mylimit)
     assert resp.status_code == 200
     print("count:%d" % len(ret['DataSet']))
     for item in ret['DataSet']:
-        print item
+        if item['FileName'].startswith("/tmp/ucloud/norun"):
+            norun += 1
+        if item['FileName'].startswith("/tmp/ucloud/run"):
+            run += 1
  
     # 若仍有后续内容, 继续翻页获取
     while ret['NextMarker'] != "":
@@ -37,4 +43,8 @@ if __name__ == '__main__':
         assert resp.status_code == 200
         print("count:%d" % len(ret['DataSet']))
         for item in ret['DataSet']:
-            print item
+            if item['FileName'].startswith("/tmp/ucloud/norun"):
+                norun += 1
+            if item['FileName'].startswith("/tmp/ucloud/run"):
+                run += 1
+    print "norun: {0}, run: {1}".format(norun, run)

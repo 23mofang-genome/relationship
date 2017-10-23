@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding:utf-8
-import sys, os, select
+import sys, os, select, StringIO, gzip
 def help():
     sys.stderr.write('''
     USAGE:
@@ -85,20 +85,25 @@ if __name__ == '__main__':
     length = len(sys.argv)
     if length == 1:
         # set a timeout 0.1s for the stdin
-        rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
+        # rfds, _, _ = select.select([sys.stdin], [], [], 0.1)
+        stringf = StringIO.StringIO(sys.stdin.read())
+        stringf.seek(0)
+        decompressedFile = gzip.GzipFile(fileobj=stringf)
+        data = decompressedFile.read()
         try:
-            part_list = rfds[0].read().split("separator")
+            part_list = data.split("separator")
         except IndexError:
             help()
             sys.stderr.write("empty stdin")
             sys.exit(-1)
-        if len(part_list) == 4:
+        if len(part_list) == 3:
             oper1arr, oper2arr = tuple([x.split() for x in part_list[:2]])
-            snpsortarr = [ x.rstrip().split('_') for x in part_list[2].split()]
+            with open('/usr/bin/snpsort.s','r') as snpsort:
+                snpsortarr=[it2.rstrip().split('_') for it2 in snpsort.readlines()]
             # global
-            infile1, infile2 = tuple(part_list[3].split())
+            infile1, infile2 = tuple(part_list[2].split())
         else:
-            sys.stderr.write("separate error: expected 4 part, found {0}".format(len(part_list)))
+            sys.stderr.write("separate error: expected 3 part, found {0}".format(len(part_list)))
             sys.exit(-1)
     elif length == 4:
         # global
@@ -111,7 +116,7 @@ if __name__ == '__main__':
         with open(infile2,'r') as oper2:
             oper2arr=[ it2.rstrip() for it2 in oper2.readlines()]
 
-        with open(indexfile,'r') as snpsort:
+        with open('./snpsort.s','r') as snpsort:
             snpsortarr=[it2.rstrip().split('_') for it2 in snpsort.readlines()]
 
     try:
