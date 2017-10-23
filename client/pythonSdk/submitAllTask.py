@@ -17,6 +17,7 @@ import gzip, StringIO
 gevent.monkey.patch_all()
 
 from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import Process  
 
 TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.3.1"
 
@@ -107,8 +108,12 @@ if __name__=='__main__':
         pool = gevent.pool.Pool(PoolNum)
         pool.map(submit_worker, part_cuple)
 
-    with ProcessPoolExecutor(max_workers=CoreNum) as executor:
-        executor.submit(processWorker, div_list(all_cuple, CoreNum))
+    # with ProcessPoolExecutor(max_workers=CoreNum) as executor:
+    #     executor.submit(processWorker, div_list(all_cuple, CoreNum))
+
+    for i in range(CoreNum-1):
+        p = Process(target=processWorker, args=(div_list(all_cuple, CoreNum),))
+        p.start()
     
     
     stop = time.time()
