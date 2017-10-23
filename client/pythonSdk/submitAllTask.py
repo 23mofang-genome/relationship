@@ -16,6 +16,8 @@ from gevent import Timeout
 import gzip, StringIO
 gevent.monkey.patch_all()
 
+from concurrent.futures import ProcessPoolExecutor
+
 TestImageName="cn-bj2.ugchub.service.ucloud.cn/testbucket_two/relationship:0.3.1"
 
 def untarbytes(data):
@@ -63,9 +65,11 @@ def submit_worker(tuple_tow_file_name):
 
 if __name__=='__main__':
     length = len(sys.argv)
-    if length == 2:
-        PoolNum = int(sys.argv[1])
+    if length == 3:
+        CoreNum = int(sys.argv[1])
+        PoolNum = int(sys.argv[2])
     else:
+        print "Need two params:\n#1 Process numbers \n#2 parallels numbers for each process"
         sys.exit(-1)
     tokenManager = tokenManager.TokenManager()
     token = tokenManager.getToken()
@@ -75,11 +79,40 @@ if __name__=='__main__':
     all_cuple = list(itertools.product(norun_list, run_list))
 
     PoolNum = PoolNum
-    pool = gevent.pool.Pool(PoolNum)
     start = time.time()
-    data = pool.map(submit_worker, all_cuple)
+
+    def processWorker(part_cuple):
+        pool = gevent.pool.Pool(PoolNum)
+        pool.map(submit_worker, part_cuple)
+
+    with ProcessPoolExecutor(max_workers=CoreNum) as executor:
+        executor.submit(processWorker, div_list(all_cuple, CoreNum))
+    
+    
     stop = time.time()
     times = stop - start
     print times
     with open('time.txt', 'a') as time_file:
         time_file.write(times)
+
+def div_list(ls,n):  
+    if not isinstance(ls,list) or not isinstance(n,int):  
+        return []  
+    ls_len = len(ls)  
+    if n<=0 or 0==ls_len:  
+        return []  
+    if n > ls_len:  
+        return []  
+    elif n == ls_len:  
+        return [[i] for i in ls]  
+    else:  
+        j = ls_len/n  
+        k = ls_len%n  
+        ### j,j,j,...(前面有n-1个j),j+k  
+        #步长j,次数n-1  
+        ls_return = []  
+        for i in xrange(0,(n-1)*j,j):  
+            ls_return.append(ls[i:i+j])  
+        #算上末尾的j+k  
+        ls_return.append(ls[(n-1)*j:])  
+        return ls_return
