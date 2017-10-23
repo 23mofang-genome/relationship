@@ -111,8 +111,8 @@ if __name__=='__main__':
     # with ProcessPoolExecutor(max_workers=CoreNum) as executor:
     #     executor.submit(processWorker, div_list(all_cuple, CoreNum))
 
-    for i in range(CoreNum-1):
-        p = Process(target=processWorker, args=(div_list(all_cuple, CoreNum),))
+    for part_cuple in div_list(all_cuple, CoreNum):
+        p = Process(target=processWorker, args=(part_cuple,))
         p.start()
     
     
